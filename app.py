@@ -9,7 +9,7 @@ import warnings
 
 warnings.filterwarnings(action='ignore', category=UserWarning)
 
-font_path = '读本项目demo/词嵌入实验/huggfaceface/SimHei.ttf'  # 替换为实际的字体文件路径
+font_path = 'SimHei.ttf'  # 替换为实际的字体文件路径
 font_manager.fontManager.addfont(font_path)
 plt.rcParams['font.family'] = 'SimHei'  # 将 'custom_font' 替换为您为该字体指定的名称
 plt.rcParams['axes.unicode_minus'] = False  # 设置正常显示字符
