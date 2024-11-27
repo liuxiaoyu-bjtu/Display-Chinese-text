@@ -68,7 +68,7 @@ with gr.Blocks() as demo:
             file_input = gr.File(label="上传txt文本文档文件（支持TXT格式", file_types=["txt"])
             submit_button = gr.Button("提交")  # 添加提交按钮
         with gr.Column():
-            output_image = gr.Image(visible=False)
+            output_image = gr.Image()
 
     # 文件上传后调用 process_file 函数
     submit_button.click(process_file, inputs=file_input, outputs=[output_image, output_image])
