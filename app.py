@@ -52,8 +52,9 @@ def process_file(file):
     for i, (x, y) in enumerate(embeddings_2d):
         plt.scatter(x, y, color='blue', alpha=0.5)
         plt.text(x, y, sentences[i], fontsize=12)
-    plt.xlabel('降维后的第1个维度')
-    plt.ylabel('降维后的第2个维度')
+    plt.xlabel('第1个维度')
+    plt.ylabel('第2个维度')
+    plt.axis('equal')
     plt.title('句子向量二维空间可视化')
     plt.grid(True)
     plt.tight_layout()
