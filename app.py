@@ -39,6 +39,10 @@ def process_file(file):
             print(f"读取文件时出错：{e}")
     else:
         return "不支持的数据文件格式。"
+    
+    # 将列表内容转换为带换行符的字符串
+    sentences_text = "\n".join(sentences)
+
     # 获取每个句子的嵌入向量
     embeddings = [get_sentence_embedding(sentence) for sentence in sentences]
 
@@ -48,20 +52,21 @@ def process_file(file):
     tsne = TSNE(n_components=2, perplexity=2, random_state=42)
     embeddings_2d = tsne.fit_transform(embeddings)
     # 可视化句子向量在二维空间中的分布
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(12, 8))
     for i, (x, y) in enumerate(embeddings_2d):
         plt.scatter(x, y, color='blue', alpha=0.5)
-        plt.text(x, y, sentences[i], fontsize=12)
-    plt.xlabel('第1个维度')
-    plt.ylabel('第2个维度')
-    plt.axis('equal')
-    plt.title('句子向量二维空间可视化')
+        plt.text(x, y, sentences[i], fontsize=14)
+    plt.xlabel('第1个维度', fontsize=14)
+    plt.ylabel('第2个维度', fontsize=14)
+    plt.title('句子可视化', fontsize=14)
+    plt.rcParams['xtick.labelsize'] = 12  # 设置横坐标刻度字体大小
+    plt.rcParams['ytick.labelsize'] = 12  # 设置纵坐标刻度字体大小  
     plt.grid(True)
     plt.tight_layout()
-    # plt.show()
+    plt.axis('equal')
     image_path = 'output_display.png'
     plt.savefig(image_path)
-    return image_path, gr.update(visible=True)
+    return sentences_text, gr.update(visible=True), gr.update(visible=False), gr.update(visible=True, value=image_path)
 
 with gr.Blocks() as demo:
     with gr.Row():
@@ -69,9 +74,11 @@ with gr.Blocks() as demo:
             file_input = gr.File(label="上传txt文本文档文件（支持TXT格式", file_types=["txt"])
             submit_button = gr.Button("提交")  # 添加提交按钮
         with gr.Column():
-            output_image = gr.Image()
-
+            data_ = gr.Text(value="数据待上传", label="自然语言文本：")
+            text_placeholder = gr.Markdown("数据待上传", visible=True)  # 用于显示提示信息
+            output_image = gr.Image(visible=False)  # 图片显示区域
     # 文件上传后调用 process_file 函数
-    submit_button.click(process_file, inputs=file_input, outputs=[output_image, output_image])
+    submit_button.click(process_file, inputs=file_input, outputs=[data_, data_, text_placeholder, output_image])
 
 demo.launch(share=True)
+
