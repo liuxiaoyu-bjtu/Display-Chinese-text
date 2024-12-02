@@ -16,7 +16,7 @@ plt.rcParams['axes.unicode_minus'] = False  # 设置正常显示字符
 
 def get_sentence_embedding(sentence):
     # 加载BERT模型和分词器
-    model_name = 'bert-base-chinese'
+    model_name = '/bert-base-chinese1'
     tokenizer = BertTokenizer.from_pretrained(model_name)
     model = BertModel.from_pretrained(model_name)
     inputs = tokenizer(sentence, return_tensors='pt', padding=True, truncation=True, max_length=128)
@@ -26,9 +26,23 @@ def get_sentence_embedding(sentence):
     sentence_embedding = outputs.last_hidden_state[:, 0, :].squeeze().numpy()
     return sentence_embedding
 
-def process_text(input_text):
-    # 将输入文本按行分割
-    sentences = input_text.splitlines()  # 按行分割文本
+def process_file(file):
+    # 读取txt文档，并将每一行文本以字符串的形式存在列表中
+    sentences = []
+    if file.name.endswith('.txt'):
+        try:
+            with open(file.name, 'r', encoding='utf-8') as file:
+                sentences = [line.strip() for line in file]  # 去掉每行的首尾空格或换行符
+        except FileNotFoundError:
+            print(f"文件未找到：{file.name}")
+        except Exception as e:
+            print(f"读取文件时出错：{e}")
+    else:
+        return "不支持的数据文件格式。"
+    
+    # 将列表内容转换为带换行符的字符串
+    sentences_text = "\n".join(sentences)
+
     # 获取每个句子的嵌入向量
     embeddings = [get_sentence_embedding(sentence) for sentence in sentences]
 
@@ -37,31 +51,33 @@ def process_text(input_text):
     # 使用t-SNE进行降维，设置perplexity为小于样本数量的值
     tsne = TSNE(n_components=2, perplexity=2, random_state=42)
     embeddings_2d = tsne.fit_transform(embeddings)
-    
     # 可视化句子向量在二维空间中的分布
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(12, 8))
     for i, (x, y) in enumerate(embeddings_2d):
         plt.scatter(x, y, color='blue', alpha=0.5)
-        plt.text(x, y, sentences[i], fontsize=12)
-    plt.xlabel('降维后的第1个维度')
-    plt.ylabel('降维后的第2个维度')
-    plt.axis('equal')
-    plt.title('句子向量二维空间可视化')
+        plt.text(x, y, sentences[i], fontsize=14)
+    plt.xlabel('第1个维度', fontsize=14)
+    plt.ylabel('第2个维度', fontsize=14)
+    plt.title('句子可视化', fontsize=14)
+    plt.rcParams['xtick.labelsize'] = 12  # 设置横坐标刻度字体大小
+    plt.rcParams['ytick.labelsize'] = 12  # 设置纵坐标刻度字体大小  
     plt.grid(True)
     plt.tight_layout()
+    plt.axis('equal')
     image_path = 'output_display.png'
     plt.savefig(image_path)
-    return image_path, gr.update(visible=True)
+    return sentences_text, gr.update(visible=True), gr.update(visible=False), image_path, gr.update(visible=True)
 
 with gr.Blocks() as demo:
     with gr.Row():
         with gr.Column():
-            input_textbox = gr.Textbox(label="请输入文本，每行代表一个句子", lines=5)  # 输入框，支持多行
-            submit_button = gr.Button("提交")  # 提交按钮
+            file_input = gr.File(label="上传txt文本文档文件（支持TXT格式", file_types=["txt"])
+            submit_button = gr.Button("提交")  # 添加提交按钮
         with gr.Column():
-            output_image = gr.Image(label="待提交数据")  # 图片显示区域
-
-    # 绑定按钮点击事件，调用process_text处理文本
-    submit_button.click(process_text, inputs=input_textbox, outputs=[output_image, output_image])
+            data_ = gr.Text(value="数据待上传", label="自然语言文本：")
+            text_placeholder = gr.Markdown("数据待上传", visible=True)  # 用于显示提示信息
+            output_image = gr.Image(visible=False)  # 图片显示区域
+    # 文件上传后调用 process_file 函数
+    submit_button.click(process_file, inputs=file_input, outputs=[data_, data_, text_placeholder, output_image, output_image])
 
 demo.launch(share=True)
