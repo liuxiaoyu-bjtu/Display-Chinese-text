@@ -16,7 +16,7 @@ plt.rcParams['axes.unicode_minus'] = False  # 设置正常显示字符
 
 def get_sentence_embedding(sentence):
     # 加载BERT模型和分词器
-    model_name = '/bert-base-chinese'
+    model_name = './bert-base-chinese'
     tokenizer = BertTokenizer.from_pretrained(model_name)
     model = BertModel.from_pretrained(model_name)
     inputs = tokenizer(sentence, return_tensors='pt', padding=True, truncation=True, max_length=128)
