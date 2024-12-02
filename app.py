@@ -16,9 +16,16 @@ plt.rcParams['axes.unicode_minus'] = False  # 设置正常显示字符
 
 def get_sentence_embedding(sentence):
     # 加载BERT模型和分词器
-    model_name = './bert-base-chinese'
-    tokenizer = BertTokenizer.from_pretrained(model_name)
-    model = BertModel.from_pretrained(model_name)
+    model_name = './bert-base-chinese1'
+    
+    # 尝试加载本地模型并捕获异常
+    try:
+        tokenizer = BertTokenizer.from_pretrained(model_name)
+        model = BertModel.from_pretrained(model_name)
+    except OSError as e:
+        # 如果加载模型失败，返回错误信息
+        return f"加载模型时出错：{str(e)}"
+
     inputs = tokenizer(sentence, return_tensors='pt', padding=True, truncation=True, max_length=128)
     with torch.no_grad():
         outputs = model(**inputs)
@@ -45,6 +52,10 @@ def process_file(file):
 
     # 获取每个句子的嵌入向量
     embeddings = [get_sentence_embedding(sentence) for sentence in sentences]
+
+    # 如果有任何加载模型的错误，返回错误信息
+    if isinstance(embeddings[0], str) and embeddings[0].startswith("加载模型时出错"):
+        return embeddings[0], gr.update(visible=True), gr.update(visible=False), None, gr.update(visible=False)
 
     # 将列表转换为NumPy数组
     embeddings = np.array(embeddings)
