@@ -66,7 +66,7 @@ def process_file(file):
     plt.axis('equal')
     image_path = 'output_display.png'
     plt.savefig(image_path)
-    return sentences_text, gr.update(visible=True), gr.update(visible=False), gr.update(visible=True, value=image_path)
+    return sentences_text, image_path
 
 with gr.Blocks() as demo:
     with gr.Row():
@@ -75,9 +75,8 @@ with gr.Blocks() as demo:
             submit_button = gr.Button("提交")  # 添加提交按钮
         with gr.Column():
             data_ = gr.Text(value="数据待上传", label="自然语言文本：")
-            text_placeholder = gr.Markdown("数据待上传", visible=True)  # 用于显示提示信息
             output_image = gr.Image(visible=False)  # 图片显示区域
     # 文件上传后调用 process_file 函数
-    submit_button.click(process_file, inputs=file_input, outputs=[data_, data_, text_placeholder, output_image])
+    submit_button.click(process_file, inputs=file_input, outputs=[data_, output_image])
 
 demo.launch(share=True)
