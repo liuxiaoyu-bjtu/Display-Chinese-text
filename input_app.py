@@ -43,14 +43,12 @@ def process_text(input_text):
     for i, (x, y) in enumerate(embeddings_2d):
         plt.scatter(x, y, color='blue', alpha=0.5)
         plt.text(x, y, sentences[i], fontsize=12)
-    plt.xlabel('第1个维度', fontsize=14)
-    plt.ylabel('第2个维度', fontsize=14)
-    plt.title('句子可视化', fontsize=14)
-    plt.rcParams['xtick.labelsize'] = 12  # 设置横坐标刻度字体大小
-    plt.rcParams['ytick.labelsize'] = 12  # 设置纵坐标刻度字体大小  
+    plt.xlabel('降维后的第1个维度')
+    plt.ylabel('降维后的第2个维度')
+    plt.axis('equal')
+    plt.title('句子向量二维空间可视化')
     plt.grid(True)
     plt.tight_layout()
-    plt.axis('equal')
     image_path = 'output_display.png'
     plt.savefig(image_path)
     return image_path, gr.update(visible=True)
