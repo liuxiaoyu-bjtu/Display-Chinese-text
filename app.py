@@ -81,4 +81,3 @@ with gr.Blocks() as demo:
     submit_button.click(process_file, inputs=file_input, outputs=[data_, data_, text_placeholder, output_image])
 
 demo.launch(share=True)
-
