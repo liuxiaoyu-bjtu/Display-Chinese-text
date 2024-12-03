@@ -16,7 +16,7 @@ plt.rcParams['axes.unicode_minus'] = False  # 设置正常显示字符
 
 def get_sentence_embedding(sentence):
     # 加载BERT模型和分词器
-    model_name = './bert-base-chinese1'
+    model_name = 'bert-base-chinese1'
     
     # 尝试加载本地模型并捕获异常
     try:
