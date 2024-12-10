@@ -10,7 +10,7 @@ warnings.filterwarnings(action='ignore', category=UserWarning)
 
 def process_file(file):
     # 加载BERT模型和分词器
-    model_name = './Display-Chinese-text/bert-base-chinese1/model_path'
+    model_name = '/Display-Chinese-text/bert-base-chinese1/model_path'
     
     # 尝试加载本地模型并捕获异常
     try:
