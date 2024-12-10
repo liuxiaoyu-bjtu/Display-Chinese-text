@@ -18,7 +18,7 @@ def process_file(file):
         model = BertModel.from_pretrained(model_name)
     except OSError as e:
         # 如果加载模型失败，返回错误信息
-        return f"加载模型时出错：{str(e)}", gr.update(visible=True), gr.update(visible=False), None, gr.update(visible=False)
+        return f"加载模型时出错：{str(e)}", "111111", None, gr.update(visible=False)
 
     # 读取txt文档，并将每一行文本以字符串的形式存在列表中
     sentences = []
@@ -27,11 +27,11 @@ def process_file(file):
             with open(file.name, 'r', encoding='utf-8') as f:
                 sentences = [line.strip() for line in f]  # 去掉每行的首尾空格或换行符
         except FileNotFoundError:
-            return "文件未找到", gr.update(visible=True), None, gr.update(visible=False)
+            return "文件未找到", "222222", None, gr.update(visible=False)
         except Exception as e:
-            return f"读取文件时出错：{e}", gr.update(visible=True), None, gr.update(visible=False)
+            return f"读取文件时出错：{e}", "333333", None, gr.update(visible=False)
     else:
-        return "不支持的数据文件格式。", gr.update(visible=True), None, gr.update(visible=False)
+        return "不支持的数据文件格式。", "444444", None, gr.update(visible=False)
     
     # 将列表内容转换为带换行符的字符串
     sentences_text = "\n".join(sentences)
@@ -69,7 +69,7 @@ def process_file(file):
     image_path = 'output_display.png'
     plt.savefig(image_path)
     
-    return sentences_text, gr.update(visible=False), image_path, gr.update(visible=True)
+    return sentences_text, "555555", image_path, gr.update(visible=True)
 
 with gr.Blocks() as demo:
     with gr.Row():
