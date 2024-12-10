@@ -78,7 +78,7 @@ with gr.Blocks() as demo:
             submit_button = gr.Button("提交")  # 添加提交按钮
         with gr.Column():
             data_ = gr.Text(value="数据待上传", label="自然语言文本：")
-            text_placeholder = gr.Markdown("数据待上传", visible=True)  # 用于显示提示信息
+            text_placeholder = gr.Text(value="数据待上传", visible=True)  # 用于显示提示信息
             output_image = gr.Image(visible=False)  # 图片显示区域
     # 文件上传后调用 process_file 函数
     submit_button.click(process_file, inputs=file_input, outputs=[data_, text_placeholder, output_image, output_image])
