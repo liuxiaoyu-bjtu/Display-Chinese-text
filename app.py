@@ -27,11 +27,11 @@ def process_file(file):
             with open(file.name, 'r', encoding='utf-8') as f:
                 sentences = [line.strip() for line in f]  # 去掉每行的首尾空格或换行符
         except FileNotFoundError:
-            return "文件未找到", gr.update(visible=True), gr.update(visible=False), None, gr.update(visible=False)
+            return "文件未找到", gr.update(visible=True), None, gr.update(visible=False)
         except Exception as e:
-            return f"读取文件时出错：{e}", gr.update(visible=True), gr.update(visible=False), None, gr.update(visible=False)
+            return f"读取文件时出错：{e}", gr.update(visible=True), None, gr.update(visible=False)
     else:
-        return "不支持的数据文件格式。", gr.update(visible=True), gr.update(visible=False), None, gr.update(visible=False)
+        return "不支持的数据文件格式。", gr.update(visible=True), None, gr.update(visible=False)
     
     # 将列表内容转换为带换行符的字符串
     sentences_text = "\n".join(sentences)
@@ -69,7 +69,7 @@ def process_file(file):
     image_path = 'output_display.png'
     plt.savefig(image_path)
     
-    return sentences_text, gr.update(visible=True), gr.update(visible=False), image_path, gr.update(visible=True)
+    return sentences_text, gr.update(visible=False), image_path, gr.update(visible=True)
 
 with gr.Blocks() as demo:
     with gr.Row():
@@ -81,6 +81,6 @@ with gr.Blocks() as demo:
             text_placeholder = gr.Markdown("数据待上传", visible=True)  # 用于显示提示信息
             output_image = gr.Image(visible=False)  # 图片显示区域
     # 文件上传后调用 process_file 函数
-    submit_button.click(process_file, inputs=file_input, outputs=[data_, data_, text_placeholder, output_image, output_image])
+    submit_button.click(process_file, inputs=file_input, outputs=[data_, text_placeholder, output_image, output_image])
 
 demo.launch(share=True)
